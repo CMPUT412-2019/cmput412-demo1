@@ -1,0 +1,30 @@
+<launch>
+    <arg name="range_threshold" default="0.8" />
+    <arg name="linear_accel" default="1.0" />
+    <arg name="angular_accel" default="1.0" />
+    <arg name="cooldown_time" default="1.0" />
+
+    <env name="GAZEBO_RESOURCE_PATH" value="$(find wanderbot)" />
+    <include file="$(find turtlebot_gazebo)/launch/turtlebot_world.launch">
+        <arg name="world_file" value="worlds/enclosed.world" />
+    </include>
+
+    <node name="control" pkg="wanderbot" type="control.py" output="screen">
+        <remap from="cmd_vel" to="control/cmd_vel" />
+        <remap from="range_ahead" to="range_ahead" />
+        <param name="range_threshold" type="double" value="$(arg range_threshold)" />
+        <param name="cooldown_time" type="double" value="$(arg cooldown_time)" />
+    </node>
+    <node name="velocity_ramp" pkg="teleop" type="velocity_ramp.py" output="screen">
+        <remap from="cmd_vel_in" to="control/cmd_vel" />
+        <remap from="cmd_vel_out" to="cmd_vel_mux/input/teleop" />
+        <param name="linear_accel" type="double" value="$(arg linear_accel)" />
+        <param name="angular_accel" type="double" value="$(arg angular_accel)" />
+    </node>
+    <node name="range_ahead" pkg="wanderbot" type="range_ahead.py" output="screen">
+        <remap from="scan" to="scan" />
+        <remap from="range_ahead" to="range_ahead" />
+    </node>
+    
+</launch>
+

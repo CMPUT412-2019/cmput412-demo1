@@ -1,0 +1,12 @@
+<launch>
+    <include file="$(find turtlebot_gazebo)/launch/turtlebot_world.launch" />
+
+    <node name="control" pkg="teleop" type="control.py" output="screen">
+        <remap from="cmd_vel" to="control/cmd_vel" />
+    </node>
+    <node name="velocity_ramp" pkg="teleop" type="velocity_ramp.py" output="screen">
+        <remap from="cmd_vel_in" to="control/cmd_vel" />
+        <remap from="cmd_vel_out" to="cmd_vel_mux/input/teleop" />
+    </node>
+    
+</launch>
